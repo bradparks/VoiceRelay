@@ -1,0 +1,58 @@
+{
+    "appKeys": {
+        "KEY_BATT": 5,
+        "KEY_BEEP": 1,
+        "KEY_ERR": 99,
+        "KEY_OPTIONS": 4,
+        "KEY_PITCH": 6,
+        "KEY_SPEAK": 2,
+        "KEY_SPEED": 7,
+        "KEY_SYS": 0,
+        "KEY_VOICES": 3
+    },
+    "capabilities": [
+        ""
+    ],
+    "companyName": "\u00a92016 robisodd",
+    "enableMultiJS": false,
+    "longName": "Voice Relay and Phone Finder for Android",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/female.png",
+                "name": "FEMALE",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/male.png",
+                "name": "MALE",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/cursor.png",
+                "name": "CURSOR",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/MicIcon.png",
+                "menuIcon": true,
+                "name": "MICICON",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "Voice \ud83c\udfa4 Relay",
+    "targetPlatforms": [
+        "aplite",
+        "basalt",
+        "chalk"
+    ],
+    "uuid": "0eda915d-0123-4444-8888-decaffc0ffee",
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}
