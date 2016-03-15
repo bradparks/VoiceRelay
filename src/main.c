@@ -4,7 +4,6 @@
 #include "main.h"
 Window *main_window;
 Layer *main_layer, *root_layer, *header_layer;
-GBitmap *cursor_icon;
 #define header_height IF_CHALK_ELSE(40, 26)
 GColor header_color;
 
@@ -25,8 +24,9 @@ char buffer[256];
 
 uint8_t cursor=3;
 uint8_t cursor_max = 0;//5;
+uint8_t cursor_max_hold = 99;
 
-char dictation_text[100] = "Connecting to phone...";  // Voice API has a 100 character limit.
+char dictation_text[100] = "\n\nConnecting to phone...";  // Voice API has a 100 character limit.
 //char dictation_text[100] = "Welcome to Android Voice Relay for Pebble. This is a very long string to test chalk";  // Voice API has a 100 character limit.
 //char dictation_text[100] = "testing testing one two three";  // Voice API has a 100 character limit.
 char welcome_message[] = "Welcome to Android Voice Relay for Pebble";
@@ -53,18 +53,11 @@ enum {
   KEY_VOICES  = 3,  // Send: Change Voice
   KEY_OPTIONS = 4,  // Send: Change Options such as pitch, rate and volume
   KEY_BATT    = 5,  // Recv: Phone battery message
-  KEY_PITCH = 6,
-  KEY_SPEED = 7,
+  KEY_PITCH   = 6,
+  KEY_SPEED   = 7,
   KEY_ERR     = 99  // Error!
 //   KEY_PING = 5,          // Command: Ping to get delay (in ms) between send msg and recv msg to determine phone-watch distance
 };
-
-//Used to add optional pitch (range 0 to 2), rate (range 0 to 1.5), volume (range 0 to 1) and callbacks.
-//responsiveVoice.speak("hello world");
-//responsiveVoice.speak("hello world", "UK English Male");
-//responsiveVoice.speak("hello world", "UK English Male", {pitch: 2});
-//responsiveVoice.speak("hello world", "UK English Male", {rate: 1.5});
-//responsiveVoice.speak("hello world", "UK English Male", {volume: 1});
 
 uint8_t voice_choice=0;
 char *voices[] = {
@@ -224,11 +217,14 @@ void send_message_to_phone_old(uint32_t key, char *str) {
   }
 }
 
-//Set time this update came in
-//   time_t temp = time(NULL);
-//   struct tm *tm = localtime(&temp);
-//   strftime(time_buffer, sizeof("Last updated: XX:XX"), "Last updated: %H:%M", tm);
-//   text_layer_set_text(time_layer, (char*) &time_buffer);
+static void timer_callback(void *data) {
+  if(cursor_max_hold > 0 && cursor_max_hold < 99) {
+    strcpy(dictation_text, welcome_message);
+    cursor_max = cursor_max_hold;//(int)data;
+    cursor_max_hold = 0;
+    dirty();
+  }
+}
 
 void process_tuple(Tuple *t) {
             int16_t level;
@@ -241,13 +237,16 @@ char string_value[256]="0000";
     case KEY_SYS:  // System Message
       if(string_value[0]=='S') { // Apple
         cursor_max = 0;
+        cursor_max_hold = 0;
         strcpy(dictation_text, string_value);
       } else if(string_value[0]=='X') { // No Beeps
-        strcpy(dictation_text, welcome_message);
-        cursor_max = 4;
+        strcpy(dictation_text, &string_value[1]);  // Remove first character of message and display
+        cursor_max_hold = 4;  //cursor_max = 4;
+        app_timer_register(5000, timer_callback, (void*)4); // Display Detected Phone then wait a moment
       } else if(string_value[0]=='C') {  // Good
-        strcpy(dictation_text, welcome_message);
-        cursor_max = 5;
+        strcpy(dictation_text, &string_value[1]);  // Remove first character of message and display
+        app_timer_register(5000, timer_callback, (void*)5); // Display Detected Phone then wait a moment
+        cursor_max_hold = 5;  //cursor_max = 5;
       } else {
         //snprintf(buffer, sizeof(buffer), "System Message: %s", string_value); LOG("%s", buffer);
         strcpy(dictation_text, string_value);
@@ -271,7 +270,7 @@ char string_value[256]="0000";
           level = level + (100*((uint16_t)(string_value[1])-48));
           level = level + (10* ((uint16_t)(string_value[2])-48));
           level = level + (1*  ((uint16_t)(string_value[3])-48));
-        LOG("L: %d - %d - %d", (100*(uint16_t)(string_value[1])), (10*(uint16_t)(string_value[2])), (1*(uint16_t)(string_value[3])));
+        LOG("L: %d - %d - %d", (100*(uint16_t)(string_value[1]-48)), (10*(uint16_t)(string_value[2]-48)), (1*(uint16_t)(string_value[3]-48)));
           if(level>100 || level<0)
             phone_battery_level = 255;  // bad battery level
           else
@@ -281,9 +280,6 @@ char string_value[256]="0000";
         break;
       }
     break;
-//     case KEY_:
-//     //snprintf(buffer, sizeof(buffer), "%s", string_value); LOG("%s", buffer);
-//     break;
     case KEY_ERR:  // Error
     snprintf(buffer, sizeof(buffer), "Error Message: %s", string_value); LOG("%s", buffer);
     break;
@@ -397,6 +393,11 @@ void set_text(char *str, uint8_t text_color, uint8_t bgcolor) {
 //  Button Functions
 // ===============================================================================================================================================
 void sl_click_handler  (ClickRecognizerRef recognizer, void *context) { // SELECT button
+  if(cursor_max_hold > 0) {
+    cursor_max_hold = 5;
+    timer_callback(NULL);
+    return;
+  }
   if(cursor_max > 0) {  // If screen has something
     switch(cursor) {
       case 0:
@@ -459,6 +460,11 @@ void sl_click_handler  (ClickRecognizerRef recognizer, void *context) { // SELEC
 }
 
 void up_click_handler  (ClickRecognizerRef recognizer, void *context) { //   UP   button
+  if(cursor_max_hold > 0) {
+    timer_callback(NULL);
+    return;
+  }
+
   cursor--;
   if(cursor>cursor_max)  // uint8_t means below 0 becomes 255
     cursor = cursor_max;
@@ -466,6 +472,11 @@ void up_click_handler  (ClickRecognizerRef recognizer, void *context) { //   UP 
 }
 
 void dn_click_handler  (ClickRecognizerRef recognizer, void *context) { //  DOWN  button
+  if(cursor_max_hold > 0) {
+    timer_callback(NULL);
+    return;
+  }
+
   cursor++;
   if(cursor>cursor_max)
     cursor=0;
@@ -473,6 +484,11 @@ void dn_click_handler  (ClickRecognizerRef recognizer, void *context) { //  DOWN
 }
 
 void bk_click_handler  (ClickRecognizerRef recognizer, void *context) { //  BACK  button
+  if(cursor_max_hold > 0 && cursor_max_hold <99) {
+    timer_callback(NULL);
+    return;
+  }
+  
   window_stack_pop_all(false);
 }
 
@@ -503,11 +519,11 @@ void main_layer_update(Layer *me, GContext *ctx) {
   GRect rect;// = GRect(IF_CHALK_ELSE(32, 16), IF_CHALK_ELSE(32, 0), size.w-16, 16);
 
   if(cursor_max == 0) {
-    rect=GRect(16, rect.origin.y + 34, size.w - 32, 80);
+    rect=GRect(16, 20, size.w - 32, size.h - 20);
     graphics_context_set_text_color(ctx, (cursor==1)?BGColor:FGColor);
     graphics_context_set_fill_color(ctx, (cursor==1)?FGColor:BGColor);
     graphics_fill_rect(ctx, rect, 0, GCornerNone);
-    graphics_draw_text(ctx, dictation_text, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD), rect, GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL);
+    graphics_draw_text(ctx, dictation_text, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD), rect, GTextOverflowModeWordWrap, GTextAlignmentCenter, NULL);
     // Prints Full-screen Message
   } else {
     rect = GRect(0, 4, size.w, 16);
@@ -577,10 +593,10 @@ void header_draw_update(Layer *me, GContext *ctx) {
   graphics_draw_text(ctx, text_to_draw, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD), GRect(frame.origin.x + 40, frame.origin.y + (frame.size.h - 30), frame.size.w, frame.size.h), GTextOverflowModeWordWrap, GTextAlignmentLeft, NULL);
 
   if(phone_battery_level>100 || !phone_connected || !js_connected) {
-    snprintf(text_to_draw, sizeof(text_to_draw), "%s", phone_connected?js_connected?"Connected":"No Javascript":"Discon");
+    snprintf(text_to_draw, sizeof(text_to_draw), "%s", phone_connected?js_connected?"Connected":"No Javascript":"Disconnected");
     LOG("Draw PhoneBatt: %d %c", phone_battery_level, phone_charging);
   } else {
-    snprintf(text_to_draw, sizeof(text_to_draw), "%d%%%c", phone_battery_level, phone_charging ? '+' : '\0');
+    snprintf(text_to_draw, sizeof(text_to_draw), " %d%%%c", phone_battery_level, phone_charging ? '+' : '\0');
   }
   graphics_draw_text(ctx, text_to_draw, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD), GRect(frame.origin.x + 24, frame.origin.y + (frame.size.h - 15), frame.size.w, frame.size.h), GTextOverflowModeWordWrap, GTextAlignmentLeft, NULL);
   
@@ -610,10 +626,12 @@ void header_draw_update(Layer *me, GContext *ctx) {
   
   #else
     graphics_context_set_text_color(ctx, IF_BW_COLOR(GColorWhite, GColorBlack));
-
-    if(phone_battery_level>100 || !phone_connected) {
-      snprintf(text_to_draw, sizeof(text_to_draw), "Phone\n%s", phone_connected?"Conn":"Discon");
-      LOG("Draw PhoneBatt: %d %c", phone_battery_level, phone_charging);
+    
+    //if(phone_battery_level>100 || !phone_connected) {
+    if(phone_battery_level>100 || !phone_connected || !js_connected) {
+      snprintf(text_to_draw, sizeof(text_to_draw), "Phone\n%s", phone_connected?js_connected?"Conn":"No JS":"Discon");
+      //snprintf(text_to_draw, sizeof(text_to_draw), "Phone\n%s", phone_connected?"Conn":"Discon");
+      //LOG("Draw PhoneBatt: %d %c", phone_battery_level, phone_charging);
     } else {
       snprintf(text_to_draw, sizeof(text_to_draw), "Phone\n%d%%%c", phone_battery_level, phone_charging ? '+' : '\0');
     }
@@ -760,7 +778,6 @@ void create_menu() {
 void main_window_load(Window *window) {
   // Set up window
   window_set_click_config_provider(window, click_config_provider);
-  cursor_icon = gbitmap_create_with_resource(RESOURCE_ID_CURSOR);
   root_layer = window_get_root_layer(window);
   GRect root_frame=layer_get_frame(root_layer);
   
@@ -780,7 +797,6 @@ void main_window_load(Window *window) {
 
 void main_window_unload(Window *window) {
   //if(s_simple_menu_layer) simple_menu_layer_destroy(s_simple_menu_layer);
-  if(cursor_icon) gbitmap_destroy(cursor_icon);
 }
 
 void battery_handler(BatteryChargeState charge_state) {

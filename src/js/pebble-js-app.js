@@ -1,12 +1,49 @@
-//Battery Code:
-// https://github.com/stopsatgreen/modernwebbook/blob/master/Code%20Examples/Chapter%2006/battery-event.html
+/*
+  Looking at the source, eh?  Trying to figure out how this works?
+  Well, I can't stop ya, might as well make it easier to read.
+  
+  It's not too difficult, but if you have any questions, lemme know:
+    email: robisodd@gmail.com
+    reddit: robisodd
+    pebbledev.slack.com: robisodd
+  ... I'm sure you can sense a theme.
+  
+  
+  
+  
+  Battery Code:
+    https://github.com/stopsatgreen/modernwebbook/blob/master/Code%20Examples/Chapter%2006/battery-event.html
 
-// Audio Code:
-// http://stackoverflow.com/questions/879152/how-do-i-make-javascript-beep
+  Audio Code:
+    http://stackoverflow.com/questions/879152/how-do-i-make-javascript-beep
+ 
+  Voice Code:
+    http://responsivevoice.org/
+    
+    
+    And, of course, the standard disclaimer:
+
+        The MIT License (MIT)
+
+        Copyright (c) 2016 robisodd
+
+        Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+        to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+        and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+        The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+        WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------ //
 // Variables and Logging Function
 // ------------------------------------------------------------------------------------------------------------------------------------------------ //
+// Setting some defaults in the global variables (yeah yeah, I know -- globals, schlobals)
 var currentVoice = "US English Male";
 var currentSpeed = 1;
 var currentPitch = 1;
@@ -17,10 +54,19 @@ function logit(message) {
   console.log(message);
 }
 
+// http://stackoverflow.com/questions/1144783/replacing-all-occurrences-of-a-string-in-javascript
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
+};
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------ //
 // Voice API
 // ------------------------------------------------------------------------------------------------------------------------------------------------ //
+//Source: https://code.responsivevoice.org/responsivevoice.src.js
+
+//1.4.5 came out, but I had to modify it slightly to work with older devices, 
+// and I don't wanna test all my devices again with the new code.  :/
 
 /*
  ResponsiveVoice JS v1.4.4
@@ -30,7 +76,7 @@ function logit(message) {
  License: http://responsivevoice.org/license
 */
 
-if("undefined"!=typeof responsiveVoice)logit("ResponsiveVoice already loaded"),logit(responsiveVoice);else var ResponsiveVoice=function(){var a=this;a.version="1.4.4";logit("ResponsiveVoice r"+a.version);a.responsivevoices=[{name:"UK English Female",flag:"gb",gender:"f",voiceIDs:[3,5,1,6,7,171,201,8]},{name:"UK English Male",flag:"gb",gender:"m",voiceIDs:[0,4,2,6,7,75,204,159]},{name:"US English Female",flag:"us",gender:"f",voiceIDs:[39,40,41,42,43,173,204,44]},{name:"Arabic Male",
+if("undefined"!=typeof responsiveVoice)console.log("ResponsiveVoice already loaded"),console.log(responsiveVoice);else var ResponsiveVoice=function(){var a=this;a.version="1.4.4";console.log("ResponsiveVoice r"+a.version);a.responsivevoices=[{name:"UK English Female",flag:"gb",gender:"f",voiceIDs:[3,5,1,6,7,171,201,8]},{name:"UK English Male",flag:"gb",gender:"m",voiceIDs:[0,4,2,6,7,75,204,159]},{name:"US English Female",flag:"us",gender:"f",voiceIDs:[39,40,41,42,43,173,204,44]},{name:"Arabic Male",
 flag:"ar",gender:"m",voiceIDs:[96,95,97,196,98]},{name:"Armenian Male",flag:"hy",gender:"f",voiceIDs:[99]},{name:"Australian Female",flag:"au",gender:"f",voiceIDs:[87,86,5,201,88]},{name:"Brazilian Portuguese Female",flag:"br",gender:"f",voiceIDs:[124,123,125,186,223,126]},{name:"Chinese Female",flag:"cn",gender:"f",voiceIDs:[58,59,60,155,191,231,61]},{name:"Czech Female",flag:"cz",gender:"f",voiceIDs:[101,100,102,197,103]},{name:"Danish Female",flag:"dk",gender:"f",voiceIDs:[105,104,106,198,107]},
 {name:"Deutsch Female",flag:"de",gender:"f",voiceIDs:[27,28,29,30,31,78,170,199,32]},{name:"Dutch Female",flag:"nl",gender:"f",voiceIDs:[219,84,157,158,184,45]},{name:"Finnish Female",flag:"fi",gender:"f",voiceIDs:[90,89,91,209,92]},{name:"French Female",flag:"fr",gender:"f",voiceIDs:[21,22,23,77,178,210,26]},{name:"Greek Female",flag:"gr",gender:"f",voiceIDs:[62,63,80,200,64]},{name:"Hatian Creole Female",flag:"ht",gender:"f",voiceIDs:[109]},{name:"Hindi Female",flag:"hi",gender:"f",voiceIDs:[66,
 154,179,213,67]},{name:"Hungarian Female",flag:"hu",gender:"f",voiceIDs:[9,10,81,214,11]},{name:"Indonesian Female",flag:"id",gender:"f",voiceIDs:[111,112,180,215,113]},{name:"Italian Female",flag:"it",gender:"f",voiceIDs:[33,34,35,36,37,79,181,216,38]},{name:"Japanese Female",flag:"jp",gender:"f",voiceIDs:[50,51,52,153,182,217,53]},{name:"Korean Female",flag:"kr",gender:"f",voiceIDs:[54,55,56,156,183,218,57]},{name:"Latin Female",flag:"va",gender:"f",voiceIDs:[114]},{name:"Norwegian Female",flag:"no",
@@ -68,24 +114,25 @@ lang:"ja-JP",localService:!0,"default":!0},{name:"Yuna",voiceURI:"com.apple.ttsb
 lang:"pl-PL",localService:!0,"default":!0},{name:"Luciana",voiceURI:"com.apple.ttsbundle.Luciana-compact",lang:"pt-BR",localService:!0,"default":!0},{name:"Joana",voiceURI:"com.apple.ttsbundle.Joana-compact",lang:"pt-PT",localService:!0,"default":!0},{name:"Ioana",voiceURI:"com.apple.ttsbundle.Ioana-compact",lang:"ro-RO",localService:!0,"default":!0},{name:"Milena",voiceURI:"com.apple.ttsbundle.Milena-compact",lang:"ru-RU",localService:!0,"default":!0},{name:"Laura",voiceURI:"com.apple.ttsbundle.Laura-compact",
 lang:"sk-SK",localService:!0,"default":!0},{name:"Alva",voiceURI:"com.apple.ttsbundle.Alva-compact",lang:"sv-SE",localService:!0,"default":!0},{name:"Kanya",voiceURI:"com.apple.ttsbundle.Kanya-compact",lang:"th-TH",localService:!0,"default":!0},{name:"Yelda",voiceURI:"com.apple.ttsbundle.Yelda-compact",lang:"tr-TR",localService:!0,"default":!0},{name:"Ting-Ting",voiceURI:"com.apple.ttsbundle.Ting-Ting-compact",lang:"zh-CN",localService:!0,"default":!0},{name:"Sin-Ji",voiceURI:"com.apple.ttsbundle.Sin-Ji-compact",
 lang:"zh-HK",localService:!0,"default":!0},{name:"Mei-Jia",voiceURI:"com.apple.ttsbundle.Mei-Jia-compact",lang:"zh-TW",localService:!0,"default":!0}];a.systemvoices=null;a.CHARACTER_LIMIT=100;a.VOICESUPPORT_ATTEMPTLIMIT=5;a.voicesupport_attempts=0;a.fallbackMode=!1;a.WORDS_PER_MINUTE=140;a.fallback_parts=null;a.fallback_part_index=0;a.fallback_audio=null;a.fallback_playbackrate=1;a.def_fallback_playbackrate=a.fallback_playbackrate;a.fallback_audiopool=[];a.msgparameters=null;a.timeoutId=null;a.OnLoad_callbacks=
-[];a.tstCompiled=function(a){return eval("typeof xy === 'undefined'")};a.fallbackServicePath="https://code.responsivevoice.org/"+(a.tstCompiled()?"":"develop/")+"getvoice.php";a.default_rv=a.responsivevoices[0];a.init=function(){a.is_opera||"undefined"===typeof speechSynthesis?(logit("RV: Voice synthesis not supported"),a.enableFallbackMode()):setTimeout(function(){var b=setInterval(function(){var c=window.speechSynthesis.getVoices();0!=c.length||null!=a.systemvoices&&0!=a.systemvoices.length?
-(logit("RV: Voice support ready"),a.systemVoicesReady(c),clearInterval(b)):(logit("Voice support NOT ready"),a.voicesupport_attempts++,a.voicesupport_attempts>a.VOICESUPPORT_ATTEMPTLIMIT&&(clearInterval(b),null!=window.speechSynthesis?a.iOS?(a.iOS9?a.systemVoicesReady(a.cache_ios9_voices):a.systemVoicesReady(a.cache_ios_voices),logit("RV: Voice support ready (cached)")):(logit("RV: speechSynthesis present but no system voices found"),a.enableFallbackMode()):a.enableFallbackMode()))},
-100)},100);a.Dispatch("OnLoad")};a.systemVoicesReady=function(b){a.systemvoices=b;a.mapRVs();null!=a.OnVoiceReady&&a.OnVoiceReady.call();a.Dispatch("OnReady");window.dispatchEvent(new Event("ResponsiveVoice_OnReady"))};a.enableFallbackMode=function(){a.fallbackMode=!0;logit("RV: Enabling fallback mode");a.mapRVs();null!=a.OnVoiceReady&&a.OnVoiceReady.call();a.Dispatch("OnReady");window.dispatchEvent(new Event("ResponsiveVoice_OnReady"))};a.getVoices=function(){for(var b=[],c=0;c<a.responsivevoices.length;c++)b.push({name:a.responsivevoices[c].name});
+[];a.tstCompiled=function(a){return eval("typeof xy === 'undefined'")};a.fallbackServicePath="https://code.responsivevoice.org/"+(a.tstCompiled()?"":"develop/")+"getvoice.php";a.default_rv=a.responsivevoices[0];a.init=function(){a.is_opera||"undefined"===typeof speechSynthesis?(console.log("RV: Voice synthesis not supported"),a.enableFallbackMode()):setTimeout(function(){var b=setInterval(function(){var c=window.speechSynthesis.getVoices();0!=c.length||null!=a.systemvoices&&0!=a.systemvoices.length?
+(console.log("RV: Voice support ready"),a.systemVoicesReady(c),clearInterval(b)):(console.log("Voice support NOT ready"),a.voicesupport_attempts++,a.voicesupport_attempts>a.VOICESUPPORT_ATTEMPTLIMIT&&(clearInterval(b),null!=window.speechSynthesis?a.iOS?(a.iOS9?a.systemVoicesReady(a.cache_ios9_voices):a.systemVoicesReady(a.cache_ios_voices),console.log("RV: Voice support ready (cached)")):(console.log("RV: speechSynthesis present but no system voices found"),a.enableFallbackMode()):a.enableFallbackMode()))},
+100)},100);a.Dispatch("OnLoad")};a.systemVoicesReady=function(b){a.systemvoices=b;a.mapRVs();null!=a.OnVoiceReady&&a.OnVoiceReady.call();a.Dispatch("OnReady");/*window.dispatchEvent(new Event("ResponsiveVoice_OnReady"))*/};a.enableFallbackMode=function(){a.fallbackMode=!0;console.log("RV: Enabling fallback mode");a.mapRVs();null!=a.OnVoiceReady&&a.OnVoiceReady.call();a.Dispatch("OnReady");/*window.dispatchEvent(new Event("ResponsiveVoice_OnReady"))*/};a.getVoices=function(){for(var b=[],c=0;c<a.responsivevoices.length;c++)b.push({name:a.responsivevoices[c].name});
 return b};a.speak=function(b,c,e){a.isPlaying()&&a.cancel();a.fallbackMode&&0<a.fallback_audiopool.length&&a.clearFallbackPool();b=b.replace(/[\"\`]/gm,"'");a.msgparameters=e||{};a.msgtext=b;a.msgvoicename=c;var f=[];if(b.length>a.CHARACTER_LIMIT){for(var d=b;d.length>a.CHARACTER_LIMIT;){b=d.search(/[:!?.;]+/);var g="";if(-1==b||b>=a.CHARACTER_LIMIT)b=d.search(/[,]+/);-1==b&&-1==d.search(" ")&&(b=99);if(-1==b||b>=a.CHARACTER_LIMIT){var h=d.split(" ");for(b=0;b<h.length&&!(g.length+h[b].length+1>a.CHARACTER_LIMIT);b++)g+=
-(0!=b?" ":"")+h[b]}else g=d.substr(0,b+1);d=d.substr(g.length,d.length-g.length);f.push(g)}0<d.length&&f.push(d)}else f.push(b);b=null==c?a.default_rv:a.getResponsiveVoice(c);d={};if(null!=b.mappedProfile)d=b.mappedProfile;else if(d.systemvoice=a.getMatchedVoice(b),d.collectionvoice={},null==d.systemvoice){logit("RV: ERROR: No voice found for: "+c);return}1==d.collectionvoice.fallbackvoice?(a.fallbackMode=!0,a.fallback_parts=[]):a.fallbackMode=!1;a.msgprofile=d;for(b=0;b<f.length;b++)a.fallbackMode?
+(0!=b?" ":"")+h[b]}else g=d.substr(0,b+1);d=d.substr(g.length,d.length-g.length);f.push(g)}0<d.length&&f.push(d)}else f.push(b);b=null==c?a.default_rv:a.getResponsiveVoice(c);d={};if(null!=b.mappedProfile)d=b.mappedProfile;else if(d.systemvoice=a.getMatchedVoice(b),d.collectionvoice={},null==d.systemvoice){console.log("RV: ERROR: No voice found for: "+c);return}1==d.collectionvoice.fallbackvoice?(a.fallbackMode=!0,a.fallback_parts=[]):a.fallbackMode=!1;a.msgprofile=d;for(b=0;b<f.length;b++)a.fallbackMode?
 (a.fallback_playbackrate=a.def_fallback_playbackrate,c=a.selectBest([d.collectionvoice.pitch,d.systemvoice.pitch,1]),g=a.selectBest([a.iOS9?1:null,d.collectionvoice.rate,d.systemvoice.rate,1]),h=a.selectBest([d.collectionvoice.volume,d.systemvoice.volume,1]),null!=e&&(c*=null!=e.pitch?e.pitch:1,g*=null!=e.rate?e.rate:1,h*=null!=e.volume?e.volume:1),c/=2,g/=2,h*=2,c=Math.min(Math.max(c,0),1),g=Math.min(Math.max(g,0),1),h=Math.min(Math.max(h,0),1),c=a.fallbackServicePath+"?t="+encodeURIComponent(f[b])+
 "&tl="+(d.collectionvoice.lang||d.systemvoice.lang||"en-US")+"&sv="+(d.collectionvoice.service||d.systemvoice.service||"")+"&vn="+(d.collectionvoice.voicename||d.systemvoice.voicename||"")+"&pitch="+c.toString()+"&rate="+g.toString()+"&vol="+h.toString(),g=document.createElement("AUDIO"),g.src=c,g.playbackRate=a.fallback_playbackrate,g.preload="auto",g.volume=d.collectionvoice.volume||d.systemvoice.volume||1,a.fallback_parts.push(g)):(c=new SpeechSynthesisUtterance,c.voice=d.systemvoice,c.voiceURI=
 d.systemvoice.voiceURI,c.volume=a.selectBest([d.collectionvoice.volume,d.systemvoice.volume,1]),c.rate=a.selectBest([a.iOS9?1:null,d.collectionvoice.rate,d.systemvoice.rate,1]),c.pitch=a.selectBest([d.collectionvoice.pitch,d.systemvoice.pitch,1]),c.text=f[b],c.lang=a.selectBest([d.collectionvoice.lang,d.systemvoice.lang]),c.rvIndex=b,c.rvTotal=f.length,0==b&&(c.onstart=a.speech_onstart),a.msgparameters.onendcalled=!1,null!=e?(b<f.length-1&&1<f.length?(c.onend=e.onchunkend,c.hasOwnProperty("addEventListener")&&
-c.addEventListener("end",e.onchuckend)):(c.onend=a.speech_onend,c.hasOwnProperty("addEventListener")&&c.addEventListener("end",a.speech_onend)),c.onerror=e.onerror||function(a){logit("RV: Unknow Error");logit(a)},c.onpause=e.onpause,c.onresume=e.onresume,c.onmark=e.onmark,c.onboundary=e.onboundary,c.pitch=null!=e.pitch?e.pitch:c.pitch,c.rate=a.iOS?(null!=e.rate?e.rate*e.rate:1)*c.rate:(null!=e.rate?e.rate:1)*c.rate,c.volume=null!=e.volume?e.volume:c.volume):(c.onend=a.speech_onend,c.onerror=
-function(a){logit("RV: Unknow Error");logit(a)}),logit(c),speechSynthesis.speak(c));a.fallbackMode&&(a.fallback_part_index=0,a.fallback_startPart())};a.startTimeout=function(b,c){var e=a.msgprofile.collectionvoice.timerSpeed;null==a.msgprofile.collectionvoice.timerSpeed&&(e=1);if(!(0>=e)){var f=b.split(/\s+/).length,e=60/a.WORDS_PER_MINUTE*e*1E3*f;3>f&&(e=4E3);2E3>e&&(e=2E3);a.timeoutId=setTimeout(c,e)}};a.checkAndCancelTimeout=function(){null!=a.timeoutId&&(clearTimeout(a.timeoutId),
+c.addEventListener("end",e.onchuckend)):(c.onend=a.speech_onend,c.hasOwnProperty("addEventListener")&&c.addEventListener("end",a.speech_onend)),c.onerror=e.onerror||function(a){console.log("RV: Unknow Error");console.log(a)},c.onpause=e.onpause,c.onresume=e.onresume,c.onmark=e.onmark,c.onboundary=e.onboundary,c.pitch=null!=e.pitch?e.pitch:c.pitch,c.rate=a.iOS?(null!=e.rate?e.rate*e.rate:1)*c.rate:(null!=e.rate?e.rate:1)*c.rate,c.volume=null!=e.volume?e.volume:c.volume):(c.onend=a.speech_onend,c.onerror=
+function(a){console.log("RV: Unknow Error");console.log(a)}),console.log(c),speechSynthesis.speak(c));a.fallbackMode&&(a.fallback_part_index=0,a.fallback_startPart())};a.startTimeout=function(b,c){var e=a.msgprofile.collectionvoice.timerSpeed;null==a.msgprofile.collectionvoice.timerSpeed&&(e=1);if(!(0>=e)){var f=b.split(/\s+/).length,e=60/a.WORDS_PER_MINUTE*e*1E3*f;3>f&&(e=4E3);2E3>e&&(e=2E3);a.timeoutId=setTimeout(c,e)}};a.checkAndCancelTimeout=function(){null!=a.timeoutId&&(clearTimeout(a.timeoutId),
 a.timeoutId=null)};a.speech_timedout=function(){a.cancel();a.cancelled=!1;a.speech_onend()};a.speech_onend=function(){a.checkAndCancelTimeout();!0===a.cancelled?a.cancelled=!1:null!=a.msgparameters&&null!=a.msgparameters.onend&&1!=a.msgparameters.onendcalled&&(a.msgparameters.onendcalled=!0,a.msgparameters.onend())};a.speech_onstart=function(){(a.iOS||a.is_safari)&&a.startTimeout(a.msgtext,a.speech_timedout);a.msgparameters.onendcalled=!1;if(null!=a.msgparameters&&null!=a.msgparameters.onstart)a.msgparameters.onstart()};
-a.fallback_startPart=function(){0==a.fallback_part_index&&a.speech_onstart();a.fallback_audio=a.fallback_parts[a.fallback_part_index];if(null==a.fallback_audio)logit("RV: Fallback Audio is not available");else{var b=a.fallback_audio;a.fallback_audiopool.push(b);setTimeout(function(){b.playbackRate=a.fallback_playbackrate},50);b.onloadedmetadata=function(){b.play();b.playbackRate=a.fallback_playbackrate};a.fallback_audio.play();a.fallback_audio.addEventListener("ended",a.fallback_finishPart)}};
+a.fallback_startPart=function(){0==a.fallback_part_index&&a.speech_onstart();a.fallback_audio=a.fallback_parts[a.fallback_part_index];if(null==a.fallback_audio)console.log("RV: Fallback Audio is not available");else{var b=a.fallback_audio;a.fallback_audiopool.push(b);setTimeout(function(){b.playbackRate=a.fallback_playbackrate},50);b.onloadedmetadata=function(){b.play();b.playbackRate=a.fallback_playbackrate};a.fallback_audio.play();a.fallback_audio.addEventListener("ended",a.fallback_finishPart)}};
 a.fallback_finishPart=function(b){a.checkAndCancelTimeout();a.fallback_part_index<a.fallback_parts.length-1?(a.fallback_part_index++,a.fallback_startPart()):a.speech_onend()};a.cancel=function(){a.checkAndCancelTimeout();a.fallbackMode?(null!=a.fallback_audio&&a.fallback_audio.pause(),a.clearFallbackPool()):(a.cancelled=!0,speechSynthesis.cancel())};a.voiceSupport=function(){return"speechSynthesis"in window};a.OnFinishedPlaying=function(b){if(null!=a.msgparameters&&null!=a.msgparameters.onend)a.msgparameters.onend()};
 a.setDefaultVoice=function(b){b=a.getResponsiveVoice(b);null!=b&&(a.default_rv=b)};a.mapRVs=function(){for(var b=0;b<a.responsivevoices.length;b++)for(var c=a.responsivevoices[b],e=0;e<c.voiceIDs.length;e++){var f=a.voicecollection[c.voiceIDs[e]];if(1!=f.fallbackvoice){var d=a.getSystemVoice(f.name);if(null!=d){c.mappedProfile={systemvoice:d,collectionvoice:f};break}}else{c.mappedProfile={systemvoice:{},collectionvoice:f};break}}};a.getMatchedVoice=function(b){for(var c=0;c<b.voiceIDs.length;c++){var e=
 a.getSystemVoice(a.voicecollection[b.voiceIDs[c]].name);if(null!=e)return e}return null};a.getSystemVoice=function(b){if("undefined"===typeof a.systemvoices||null===a.systemvoices)return null;for(var c=0;c<a.systemvoices.length;c++)if(a.systemvoices[c].name==b)return a.systemvoices[c];return null};a.getResponsiveVoice=function(b){for(var c=0;c<a.responsivevoices.length;c++)if(a.responsivevoices[c].name==b)return a.responsivevoices[c];return null};a.Dispatch=function(b){if(a.hasOwnProperty(b+"_callbacks")&&
 null!=a[b+"_callbacks"]&&0<a[b+"_callbacks"].length){for(var c=a[b+"_callbacks"],e=0;e<c.length;e++)c[e]();return!0}var f=b+"_callbacks_timeout",d=b+"_callbacks_timeoutCount";a.hasOwnProperty(f)||(a[d]=10,a[f]=setInterval(function(){--a[d];(a.Dispatch(b)||0>a[d])&&clearTimeout(a[f])},50));return!1};a.AddEventListener=function(b,c){a.hasOwnProperty(b+"_callbacks")||(a[b+"_callbacks"]=[]);a[b+"_callbacks"].push(c)};a.addEventListener=a.AddEventListener;a.clickEvent=function(){a.iOS&&!a.iOS_initialized&&
 (a.speak(" "),a.iOS_initialized=!0)};a.isPlaying=function(){return a.fallbackMode?null!=a.fallback_audio&&!a.fallback_audio.ended&&!a.fallback_audio.paused:speechSynthesis.speaking};a.clearFallbackPool=function(){for(var b=0;b<a.fallback_audiopool.length;b++)null!=a.fallback_audiopool[b]&&(a.fallback_audiopool[b].pause(),a.fallback_audiopool[b].src="");a.fallback_audiopool=[]};"complete"===document.readyState?a.init():document.addEventListener("DOMContentLoaded",function(){a.init()});a.selectBest=
 function(a){for(var c=0;c<a.length;c++)if(null!=a[c])return a[c];return null};a.pause=function(){a.fallbackMode?null!=a.fallback_audio&&a.fallback_audio.pause():speechSynthesis.pause()};a.resume=function(){a.fallbackMode?null!=a.fallback_audio&&a.fallback_audio.play():speechSynthesis.resume()}},responsiveVoice=new ResponsiveVoice;
+
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------ //
 // Phone Battery Reading
@@ -138,17 +185,29 @@ function batteryStatusFailure() {
   logit("Phone Battery function failed to successfully resolve the promise.  Yeah, decypher that.");
 } 
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------ //
-// Da Beeps (Also plays any .WAV)
-// ------------------------------------------------------------------------------------------------------------------------------------------------ //
 
-//Note: Beep only works on Android >= 5.0
+function init_battery() {
+    // Test for old or new battery API
+    if (navigator.battery) {
+      init(navigator.battery);
+    } else if (navigator.getBattery) {
+      navigator.getBattery().then(function (newBattery){init(newBattery);}, batteryStatusFailure);
+    } else {
+      logit('No phone battery API.  Only works on newer Android releases');
+    }
+}
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------ //
+// Da Beeps (Also can play any .WAV)
+// ------------------------------------------------------------------------------------------------------------------------------------------------ //
 var snd, snd2, looper, alarmSound, sonarSound;
 var daBeeps = true,
     beeping = false;
 
 function init_beeps() {
-  alarmSound = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU'+Array(1e3).join(123));
+  // This is loud and would be good to use as an alarm clock.  Like, set the alarm on the watch, but make your phone beep to wake up.
+  // Currently, it's good as a phone finder (though it doesn't seem to modify the volume settings, so good luck if your phone is on silent)
+  alarmSound = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU'+Array(1000).join(123));
   alarmSound.loop = true;
   alarmSound.volume = 1;
 
@@ -197,58 +256,80 @@ function beep2() {
 // ------------------------------------------------------------------------------------------------------------------------------------------------ //
 // Pebble Event Listeners and Phone Communication
 // ------------------------------------------------------------------------------------------------------------------------------------------------ //
+function show_toast() {
+  Pebble.showToast("Welcome to Voice Relay for Pebble!");  // Nice little message on the phone.  Idn't dat special.
+}
+
 Pebble.addEventListener('ready', function(e) {
   logit('PebbleKit JS Ready!');
   //logit('Pebble Account Token: ' + Pebble.getAccountToken());  // Specific User, on any watch
   //logit('Pebble Watch   Token: ' + Pebble.getWatchToken());    // Specific Watch for any user
   var userAgent = (navigator.userAgent || "[invalid userAgent]");
   logit('userAgent = ' + userAgent);
-  //     Rob's userAgent = Mozilla/5.0 (Linux; Android 5.0.1; SAMSUNG-SGH-I337 Build/LRX22C; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/45.0.2454.87 Mobile Safari/537.36
-  // Rachael's userAgent = Mozilla/5.0 (Linux; Android 4.4.2; SPH-L710 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36
-  //       iOS userAgent = "Ejecta/1.4 (iPhone5,1; OS 9.2.1)"
+  
+  // UserAgents of devices I had lying around I could test this with:
+  //  ASUS MeMO Pad Tablet = Mozilla/5.0 (Linux; U; Android 4.2.2; en-us; ME302C Build/JDQ39) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30
+  //                         Speech Init Crashes it, Battery not working, Toast works, ALARM beep does nothing but SONAR beep works (weird)
+  //                         Fixed Speech init.  Talks, but cuts off now.
+  //                         Fixed cutting off.  Talking works properly now.
+  //        Nexus 7 Tablet = Mozilla/5.0 (Linux; Android 5.1.1; Nexus 7 Build/LMY47V) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/40.0.0.0 Safari/537.36
+  //                         Everything Works: Speech, Battery, Toast, Alarm and Sonar
+  //           Galaxy S4's = Mozilla/5.0 (Linux; Android 5.0.1; SAMSUNG-SGH-I337 Build/LRX22C; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/45.0.2454.87 Mobile Safari/537.36
+  //                         Speech Works, Battery Works, Toast works, ALARM and SONAR beeps work
+  //           Galaxy S3's = Mozilla/5.0 (Linux; Android 4.4.2; SPH-L710 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36
+  //                         Speech works, Battery doesn't work, Toast works, ALARM and SONAR do nothing
+  //      iPhone 5 (A1428) = Ejecta/1.4 (iPhone5,1; OS 9.2.1)
+  //                         Nothing Works.  poopy.
 
   var regExp = /\(([^)]+)\)/;
-  var phonetype = regExp.exec(userAgent)[1];
+  var phonetype = regExp.exec(userAgent)[1] + '; ';  // Extract content inside first parantheses from useragent
   logit("PhoneType = " + phonetype);
+  // Remove Useragent Fluff
+  phonetype = phonetype.replace('; N; ','; ');
+  phonetype = phonetype.replace('; U; ','; ');
+  phonetype = phonetype.replace('; I; ','; ');
+  phonetype = phonetype.replace('wv; ','');
+  phonetype = phonetype.replace('Linux; ','');
+  phonetype = phonetype.replace('Build/','Build:');
+  phonetype = phonetype.replaceAll('; ','\n');
+  phonetype = phonetype.replaceAll(';','\n');
+  //phonetype = phonetype.split(";").join("\n");
+  logit("PhoneType Cleaned Up = \n" + phonetype);
   
-  if(navigator.userAgent.indexOf('Ejecta') >= 0) {
-    logit('This program only works on Android phones');
-    phonemode = 0;
-    Pebble.sendAppMessage({'KEY_SYS':"Sorry, this program doesn't support " + phonetype});
-  } else if(navigator.userAgent.indexOf('Chrome/30') >= 0) {
-    Pebble.sendAppMessage({'KEY_SYS':"X"});  // No beeps
-    phonemode = 1;
-  } else if(navigator.userAgent.indexOf('Chrome/33') >= 0) {
-    Pebble.sendAppMessage({'KEY_SYS':"X"});  // No beeps
-    phonemode = 1;
-  } else {
-    Pebble.sendAppMessage({'KEY_SYS':"C"});
-    phonemode = 1;
+  // First character tells C code what to do.  (the C code strips the first character out)
+  // I mean, sure, I coulda bundled multiple variables in the message, but meh.
+  if(navigator.userAgent.indexOf('[invalid userAgent]') >= 0) {
+    Pebble.sendAppMessage({'KEY_SYS':"CCannot Detect Phone Type"});
+    show_toast();
     init_beeps();
-  }
-  
-  if(phonemode >0) {
-    Pebble.showToast("Welcome to Voice Relay for Pebble!");  // Nice little message on the phone.  Idn't dat special
-
-    // Test for old or new battery API
-    if (navigator.battery) {
-      init(navigator.battery);
-    } else if (navigator.getBattery) {
-      navigator.getBattery().then(function (newBattery){init(newBattery);}, batteryStatusFailure);
-    } else {
-      logit('No phone battery API.  Only works on newer Android releases');
-    }
+    init_battery();
+  } else if(navigator.userAgent.indexOf('Ejecta') >= 0) {
+    logit('This program only works on Android phones');
+    Pebble.sendAppMessage({'KEY_SYS':"Sorry, this program doesn't support Apple:\n\n" + phonetype});
+  } else if(navigator.userAgent.indexOf('Chrome/30') >= 0) {
+    Pebble.sendAppMessage({'KEY_SYS':"XDetected\n------------\n" + phonetype});
+    show_toast();
+    init_battery();
+  } else if(navigator.userAgent.indexOf('Chrome/33') >= 0) {
+    Pebble.sendAppMessage({'KEY_SYS':"XDetected\n------------\n" + phonetype});
+    show_toast();
+    init_battery();
+  } else {
+    Pebble.sendAppMessage({'KEY_SYS':"CDetected\n------------\n" + phonetype});
+    show_toast();
+    init_beeps();
+    init_battery();
   }
 });
 
 
 function send_message(thekind, text) {
   var dict;
-  
-       if(thekind=='KEY_SYS')    dict = {'KEY_SYS':text};
-  else if(thekind=='KEY_BATT')   dict = {"KEY_BATT":text};
-  else if(thekind=='KEY_ERR')    dict = {"KEY_ERR":text};
-  else                           dict = {"KEY_ERR":text};
+  // Yeah, this is dumb.  I should fix it...  someday...
+       if(thekind=='KEY_SYS')  dict = {'KEY_SYS':text};
+  else if(thekind=='KEY_BATT') dict = {"KEY_BATT":text};
+  else if(thekind=='KEY_ERR')  dict = {"KEY_ERR":text};
+  else                         dict = {"KEY_ERR":text};
 
   Pebble.sendAppMessage(dict,
                         function(e) {/*logit('TEXT successfully sent! ');*/},
@@ -260,6 +341,7 @@ function send_message(thekind, text) {
 Pebble.addEventListener("appmessage",
                         function(e) {
                           //logit('App Message Payload: ' + JSON.stringify(e.payload));
+                          
                           if (e.payload.KEY_BEEP) {
                             if(e.payload.KEY_BEEP == "sonar pulses") {
                               logit("Start Sonar in JS");
@@ -275,7 +357,7 @@ Pebble.addEventListener("appmessage",
                           
                           if(e.payload.KEY_SPEAK) {
                             var thetext = e.payload.KEY_SPEAK;
-                            logit('Speaking: "' + thetext + '" Pitch: (' + currentPitch + ') speed: (' + currentSpeed + ")");
+                            logit('Speaking: "' + thetext + '" Pitch: (' + currentPitch + ') speed: (' + currentSpeed + ") voice: (" + currentVoice + ")");
                             responsiveVoice.speak(thetext, currentVoice, {volume: 1, pitch: currentPitch, rate: currentSpeed});
                           }
                           

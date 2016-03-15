@@ -15,10 +15,17 @@
     ],
     "companyName": "\u00a92016 robisodd",
     "enableMultiJS": false,
-    "longName": "Voice Relay and Phone Finder for Android",
+    "longName": "Voice \ud83c\udfa4 Relay",
     "projectType": "native",
     "resources": {
         "media": [
+            {
+                "file": "images/Microphone.png",
+                "menuIcon": true,
+                "name": "MICROPHONE",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
             {
                 "file": "images/female.png",
                 "name": "FEMALE",
@@ -27,18 +34,6 @@
             {
                 "file": "images/male.png",
                 "name": "MALE",
-                "type": "bitmap"
-            },
-            {
-                "file": "images/cursor.png",
-                "name": "CURSOR",
-                "type": "bitmap"
-            },
-            {
-                "file": "images/MicIcon.png",
-                "menuIcon": true,
-                "name": "MICICON",
-                "targetPlatforms": null,
                 "type": "bitmap"
             }
         ]
